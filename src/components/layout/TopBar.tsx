@@ -7,10 +7,13 @@ import {
 	ArrowLeftRight,
 	User,
 	LogOut,
+	QrCode,
 } from "lucide-react";
 import { useState } from "react";
 import { cn, truncateAddress } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth.store";
+import { WalletAddressModal } from "@/components/common/WalletAddressModal";
+import { WalletAdapterButton } from "@/components/wallet/WalletAdapterButton";
 
 const navLinks = [
 	{ href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -26,10 +29,12 @@ interface TopBarProps {
 
 export function TopBar({ title }: TopBarProps) {
 	const [menuOpen, setMenuOpen] = useState(false);
+	const [showWalletModal, setShowWalletModal] = useState(false);
 	const location = useLocation();
 	const { user, logout } = useAuthStore();
 
 	return (
+		<>
 		<header className="sticky top-0 z-30 flex items-center justify-between px-4 md:px-6 h-14 bg-[hsl(224_71%_4%)]/80 backdrop-blur-sm border-b border-[hsl(216_34%_17%)]">
 			{/* Mobile hamburger */}
 			<button
@@ -46,9 +51,10 @@ export function TopBar({ title }: TopBarProps) {
 				</h1>
 			)}
 
-			{/* User avatar */}
-			{user && (
-				<div className="flex items-center gap-2 ml-auto">
+{/* Right side: adapter + user avatar */}
+		{user && (
+			<div className="flex items-center gap-2 ml-auto">
+				<WalletAdapterButton variant="pill" className="hidden sm:flex" />
 					{user.avatar_url ? (
 						<img
 							src={user.avatar_url}
@@ -107,10 +113,27 @@ export function TopBar({ title }: TopBarProps) {
 						})}
 						<div className="mt-auto pt-4 border-t border-[hsl(216_34%_17%)]">
 							{user?.wallet && (
-								<p className="text-xs text-[hsl(215_20%_55%)] font-mono px-3 py-2">
-									{truncateAddress(user.wallet)}
-								</p>
+								<button
+									onClick={() => {
+										setShowWalletModal(true);
+										setMenuOpen(false);
+									}}
+									className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors w-full group text-left"
+								>
+									<div className="flex-1 min-w-0">
+										<p className="text-[10px] text-[hsl(215_20%_55%)] uppercase tracking-widest mb-0.5">
+											Wallet
+										</p>
+										<p className="text-xs text-white font-mono truncate">
+											{truncateAddress(user.wallet)}
+										</p>
+									</div>
+									<QrCode size={13} className="text-[hsl(215_20%_55%)] opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+								</button>
 							)}
+							<div className="px-3 py-1">
+								<WalletAdapterButton variant="card" />
+							</div>
 							<button
 								onClick={() => {
 									void logout();
@@ -126,5 +149,13 @@ export function TopBar({ title }: TopBarProps) {
 				</div>
 			)}
 		</header>
+
+		{showWalletModal && user?.wallet && (
+			<WalletAddressModal
+				address={user.wallet}
+				onClose={() => setShowWalletModal(false)}
+			/>
+		)}
+	</>
 	);
 }

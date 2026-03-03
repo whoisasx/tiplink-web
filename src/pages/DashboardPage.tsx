@@ -1,5 +1,6 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpDown, PlusCircle, ArrowUpRight } from "lucide-react";
+import { ArrowUpDown, PlusCircle, ArrowUpRight, Send, QrCode } from "lucide-react";
 import { useAuthStore } from "@/store/auth.store";
 import { useBalances } from "@/hooks/useBalances";
 import { useTransactions } from "@/hooks/useTransactions";
@@ -12,8 +13,9 @@ import {
 	formatTokenAmount,
 } from "@/lib/utils";
 import { StatusBadge } from "@/components/common/StatusBadge";
-import { ComingSoonBanner } from "@/components/common/ComingSoonBanner";
 import { TokenIcon } from "@/components/common/TokenIcon";
+import { WalletAddressModal } from "@/components/common/WalletAddressModal";
+import { SendModal } from "@/components/common/SendModal";
 
 function StatCard({
 	label,
@@ -53,6 +55,9 @@ export function DashboardPage() {
 	});
 	const { data: linksData } = useLinks({ status: "active", limit: 1 });
 
+	const [showWalletModal, setShowWalletModal] = useState(false);
+	const [showSendModal, setShowSendModal] = useState(false);
+
 	const greeting = () => {
 		const h = new Date().getHours();
 		if (h < 12) return "Good morning";
@@ -70,9 +75,14 @@ export function DashboardPage() {
 						{user?.name ? `, ${user.name.split(" ")[0]}` : ""}
 					</h1>
 					{user?.wallet && (
-						<p className="text-xs text-[hsl(215_20%_55%)] mt-1 font-mono">
+						<button
+							onClick={() => setShowWalletModal(true)}
+							className="flex items-center gap-1.5 text-xs text-[hsl(215_20%_55%)] mt-1 font-mono hover:text-white transition-colors group"
+							title="View wallet address & QR code"
+						>
 							{truncateAddress(user.wallet, 6)}
-						</p>
+							<QrCode size={11} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+						</button>
 					)}
 				</div>
 			</div>
@@ -125,37 +135,24 @@ export function DashboardPage() {
 							Swap
 						</span>
 					</Link>
-					<div className="flex flex-col items-center gap-2 rounded-xl border border-[hsl(216_34%_17%)] bg-[hsl(224_71%_6%)]/50 p-4 text-center opacity-60 relative">
-						<span className="text-lg">↓</span>
-						<span className="text-xs font-medium text-[hsl(215_20%_55%)]">
-							Deposit
-						</span>
-						<span className="absolute top-2 right-2 text-[9px] font-bold text-amber-400 uppercase tracking-widest">
-							Soon
-						</span>
-					</div>
-					<div className="flex flex-col items-center gap-2 rounded-xl border border-[hsl(216_34%_17%)] bg-[hsl(224_71%_6%)]/50 p-4 text-center opacity-60 relative">
-						<span className="text-lg">↑</span>
-						<span className="text-xs font-medium text-[hsl(215_20%_55%)]">
-							Withdraw
-						</span>
-						<span className="absolute top-2 right-2 text-[9px] font-bold text-amber-400 uppercase tracking-widest">
-							Soon
-						</span>
-					</div>
-				</div>
-			</div>
+					{/* Send — opens modal with 3 sub-options */}
+					<button
+						onClick={() => setShowSendModal(true)}
+						className="flex flex-col items-center gap-2 rounded-xl border border-[hsl(216_34%_17%)] bg-[hsl(224_71%_6%)] p-4 hover:bg-white/5 transition-colors text-center w-full"
+					>
+						<Send size={20} className="text-white" />
+						<span className="text-xs font-medium text-white">Send</span>
+					</button>
 
-			{/* Coming soon banners */}
-			<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-				<ComingSoonBanner
-					title="Deposit"
-					description="Fund your wallet directly from a bank or exchange. Launching soon."
-				/>
-				<ComingSoonBanner
-					title="Withdraw"
-					description="Send funds to any bank account or external wallet. Launching soon."
-				/>
+					{/* Receive — shows wallet QR code */}
+					<button
+						onClick={() => setShowWalletModal(true)}
+						className="flex flex-col items-center gap-2 rounded-xl border border-[hsl(216_34%_17%)] bg-[hsl(224_71%_6%)] p-4 hover:bg-white/5 transition-colors text-center w-full"
+					>
+						<QrCode size={20} className="text-white" />
+						<span className="text-xs font-medium text-white">Receive</span>
+					</button>
+				</div>
 			</div>
 
 			{/* Recent transactions */}
@@ -274,6 +271,17 @@ export function DashboardPage() {
 						))}
 					</div>
 				</div>
+			)}
+
+			{/* Modals */}
+			{showWalletModal && user?.wallet && (
+				<WalletAddressModal
+					address={user.wallet}
+					onClose={() => setShowWalletModal(false)}
+				/>
+			)}
+			{showSendModal && (
+				<SendModal onClose={() => setShowSendModal(false)} />
 			)}
 		</div>
 	);

@@ -1,10 +1,25 @@
-import { StrictMode, useEffect, useRef } from "react";
+import { StrictMode, useEffect, useRef, useMemo } from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
+import {
+	ConnectionProvider,
+	WalletProvider,
+} from "@solana/wallet-adapter-react";
+import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
+import {
+	PhantomWalletAdapter,
+	SolflareWalletAdapter,
+	CoinbaseWalletAdapter,
+} from "@solana/wallet-adapter-wallets";
+import "@solana/wallet-adapter-react-ui/styles.css";
 import "./index.css";
 import App from "./App.tsx";
 import { useAuthStore } from "@/store/auth.store";
+
+const SOLANA_RPC_ENDPOINT =
+	import.meta.env.VITE_SOLANA_RPC_URL ??
+	"https://api.mainnet-beta.solana.com";
 
 const queryClient = new QueryClient({
 	defaultOptions: {
@@ -34,13 +49,35 @@ function AuthBootstrap({ children }: { children: React.ReactNode }) {
 	return <>{children}</>;
 }
 
+/** Provides Solana connection + wallet adapter context */
+function SolanaProviders({ children }: { children: React.ReactNode }) {
+	const wallets = useMemo(
+		() => [
+			new PhantomWalletAdapter(),
+			new SolflareWalletAdapter(),
+			new CoinbaseWalletAdapter(),
+		],
+		[],
+	);
+
+	return (
+		<ConnectionProvider endpoint={SOLANA_RPC_ENDPOINT}>
+			<WalletProvider wallets={wallets} autoConnect>
+				<WalletModalProvider>{children}</WalletModalProvider>
+			</WalletProvider>
+		</ConnectionProvider>
+	);
+}
+
 createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<QueryClientProvider client={queryClient}>
-			<AuthBootstrap>
-				<App />
-			</AuthBootstrap>
-			<Toaster richColors position="top-right" closeButton />
+			<SolanaProviders>
+				<AuthBootstrap>
+					<App />
+				</AuthBootstrap>
+				<Toaster richColors position="top-right" closeButton />
+			</SolanaProviders>
 		</QueryClientProvider>
 	</StrictMode>,
 );

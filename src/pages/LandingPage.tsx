@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import { getCookie, deleteCookie } from "@/lib/cookies";
 import { getGoogleAuthUrl } from "@/api/auth";
 import { useAuthStore } from "@/store/auth.store";
+import { WalletAdapterButton } from "@/components/wallet/WalletAdapterButton";
 
 /* ─────────────────────────────────────────────── helpers ──── */
 const GoogleIcon = () => (
@@ -146,12 +147,13 @@ export function LandingPage() {
 
 					{/* Desktop CTA */}
 					<div className="hidden md:flex items-center gap-3">
-						<Link
-							to="/login"
-							className="px-4 py-2 text-sm text-[#8a99b3] hover:text-white transition-colors"
-						>
-							Log in
-						</Link>
+					<WalletAdapterButton variant="pill" />
+					<Link
+						to="/login"
+						className="px-4 py-2 text-sm text-[#8a99b3] hover:text-white transition-colors"
+					>
+						Log in
+					</Link>
 						<button
 							onClick={() => void handleSignIn()}
 							disabled={ctaLoading}
@@ -189,6 +191,7 @@ export function LandingPage() {
 							</a>
 						))}
 						<div className="pt-2 border-t border-white/6 flex flex-col gap-2">
+							<WalletAdapterButton variant="card" />
 							<Link
 								to="/login"
 								className="px-4 py-3 text-sm text-center text-[#8a99b3] hover:text-white transition-colors rounded-lg border border-white/10"
