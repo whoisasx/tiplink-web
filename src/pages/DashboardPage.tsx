@@ -64,6 +64,12 @@ export function DashboardPage() {
 	const [showWalletModal, setShowWalletModal] = useState(false);
 	const [showSendModal, setShowSendModal] = useState(false);
 
+	const solBalance = balances?.balances.find(
+		(b) =>
+			b.symbol === "SOL" ||
+			b.mint === "So11111111111111111111111111111111111111112",
+	);
+
 	const greeting = () => {
 		const h = new Date().getHours();
 		if (h < 12) return "Good morning";
@@ -99,12 +105,16 @@ export function DashboardPage() {
 			{/* Stats row */}
 			<div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
 				<StatCard
-					label="Total Balance"
-					value={balances ? formatUSD(balances.total_usd_value) : "—"}
+					label="SOL Balance"
+					value={
+						solBalance
+							? `${parseFloat(solBalance.ui_amount).toFixed(4)} SOL`
+							: "0.0000 SOL"
+					}
 					sub={
-						balancesLoading
-							? undefined
-							: `${balances?.balances.length ?? 0} tokens`
+						solBalance && parseFloat(solBalance.usd_value) > 0
+							? formatUSD(solBalance.usd_value)
+							: undefined
 					}
 					loading={balancesLoading}
 				/>

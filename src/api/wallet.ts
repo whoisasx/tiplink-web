@@ -40,12 +40,27 @@ export async function getTransaction(id: string): Promise<TransactionResponse> {
 	return data.result;
 }
 
+/** Convert a human-readable token amount to its smallest on-chain unit. */
+function toBaseUnits(amount: number, mint?: string): number {
+	// SOL  → lamports  (9 decimals)
+	// USDC / USDT → base units (6 decimals)
+	if (!mint || mint === "SOL") return Math.floor(amount * 1_000_000_000);
+	return Math.floor(amount * 1_000_000);
+}
+
 export async function sendTransaction(
 	req: SendTransactionRequest,
 ): Promise<SendTransactionResponse> {
+	const mint = req.mint && req.mint !== "SOL" ? req.mint : "SOL";
+	const amountBase = toBaseUnits(req.amount, req.mint);
+
 	const { data } = await apiClient.post<ApiResponse<SendTransactionResponse>>(
 		"/wallet/send",
-		req,
+		{
+			to_account: req.to,
+			amount: String(amountBase),
+			mint,
+		},
 	);
 	if (!data.result)
 		throw new Error(data.error ?? "Failed to send transaction");
@@ -57,10 +72,20 @@ export async function estimateFee(
 	amount: number,
 	mint?: string,
 ): Promise<EstimateFeeResponse> {
+	const mintStr = mint && mint !== "SOL" ? mint : "SOL";
+	const amountBase =
+		mintStr === "SOL"
+			? Math.floor(amount * 1_000_000_000)
+			: Math.floor(amount * 1_000_000);
+
 	const { data } = await apiClient.get<ApiResponse<EstimateFeeResponse>>(
 		"/wallet/fee",
 		{
-			params: { to, amount, mint },
+			params: {
+				to_account: to,
+				amount: String(amountBase),
+				mint: mintStr,
+			},
 		},
 	);
 	if (!data.result) throw new Error(data.error ?? "Failed to estimate fee");

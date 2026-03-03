@@ -61,14 +61,19 @@ export interface EstimateFeeResponse {
 }
 
 export interface SendTransactionRequest {
+	/** Destination wallet address */
 	to: string;
+	/** Amount in human-readable units (SOL or token amount) */
 	amount: number;
+	/** Mint address for SPL tokens; omit or "SOL" for native SOL */
 	mint?: string;
 }
 
 export interface SendTransactionResponse {
+	id: string;
 	signature: string;
-	tx_id: string;
+	status: string;
+	message: string;
 }
 
 export interface TransactionFilterQuery {
