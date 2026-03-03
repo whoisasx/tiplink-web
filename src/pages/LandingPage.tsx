@@ -85,13 +85,6 @@ export function LandingPage() {
 		}
 	}, [navigate]);
 
-	/* already authenticated → bounce to dashboard */
-	useEffect(() => {
-		if (status === "authenticated") {
-			void navigate("/dashboard", { replace: true });
-		}
-	}, [status, navigate]);
-
 	const handleSignIn = async () => {
 		setCtaLoading(true);
 		try {
@@ -116,12 +109,13 @@ export function LandingPage() {
 			<header className="fixed top-0 left-0 right-0 z-50 border-b border-white/6 bg-[#060810]/80 backdrop-blur-xl">
 				<nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 					{/* Logo */}
-					<Link
-						to="/"
-						className="flex items-center gap-2.5 shrink-0"
-					>
+					<Link to="/" className="flex items-center gap-2.5 shrink-0">
 						<div className="w-8 h-8 rounded-xl bg-linear-to-br from-[#14F195] to-[#0ea572] flex items-center justify-center shadow-lg shadow-[#14F195]/20">
-							<Link2 size={15} className="text-[#060810]" strokeWidth={2.5} />
+							<Link2
+								size={15}
+								className="text-[#060810]"
+								strokeWidth={2.5}
+							/>
 						</div>
 						<span className="font-bold text-[17px] tracking-tight text-white">
 							DashLink
@@ -147,21 +141,33 @@ export function LandingPage() {
 
 					{/* Desktop CTA */}
 					<div className="hidden md:flex items-center gap-3">
-					<WalletAdapterButton variant="pill" />
-					<Link
-						to="/login"
-						className="px-4 py-2 text-sm text-[#8a99b3] hover:text-white transition-colors"
-					>
-						Log in
-					</Link>
-						<button
-							onClick={() => void handleSignIn()}
-							disabled={ctaLoading}
-							className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#14F195] text-[#060810] text-sm font-semibold hover:bg-[#12d882] transition-all active:scale-[0.97] disabled:opacity-60"
-						>
-							<GoogleIcon />
-							Get Started
-						</button>
+						{status === "authenticated" ? (
+							<Link
+								to="/dashboard"
+								className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#14F195] text-[#060810] text-sm font-semibold hover:bg-[#12d882] transition-all active:scale-[0.97]"
+							>
+								Go to Dashboard
+								<ArrowRight size={14} />
+							</Link>
+						) : (
+							<>
+								<WalletAdapterButton variant="pill" />
+								<Link
+									to="/login"
+									className="px-4 py-2 text-sm text-[#8a99b3] hover:text-white transition-colors"
+								>
+									Log in
+								</Link>
+								<button
+									onClick={() => void handleSignIn()}
+									disabled={ctaLoading}
+									className="flex items-center gap-2 px-4 py-2 rounded-lg bg-[#14F195] text-[#060810] text-sm font-semibold hover:bg-[#12d882] transition-all active:scale-[0.97] disabled:opacity-60"
+								>
+									<GoogleIcon />
+									Get Started
+								</button>
+							</>
+						)}
 					</div>
 
 					{/* Mobile hamburger */}
@@ -191,21 +197,34 @@ export function LandingPage() {
 							</a>
 						))}
 						<div className="pt-2 border-t border-white/6 flex flex-col gap-2">
-							<WalletAdapterButton variant="card" />
-							<Link
-								to="/login"
-								className="px-4 py-3 text-sm text-center text-[#8a99b3] hover:text-white transition-colors rounded-lg border border-white/10"
-							>
-								Log in
-							</Link>
-							<button
-								onClick={() => void handleSignIn()}
-								disabled={ctaLoading}
-								className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-[#14F195] text-[#060810] text-sm font-semibold"
-							>
-								<GoogleIcon />
-								Get Started Free
-							</button>
+							{status === "authenticated" ? (
+								<Link
+									to="/dashboard"
+									className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-[#14F195] text-[#060810] text-sm font-semibold"
+									onClick={() => setMobileMenuOpen(false)}
+								>
+									Go to Dashboard
+									<ArrowRight size={14} />
+								</Link>
+							) : (
+								<>
+									<WalletAdapterButton variant="card" />
+									<Link
+										to="/login"
+										className="px-4 py-3 text-sm text-center text-[#8a99b3] hover:text-white transition-colors rounded-lg border border-white/10"
+									>
+										Log in
+									</Link>
+									<button
+										onClick={() => void handleSignIn()}
+										disabled={ctaLoading}
+										className="flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-[#14F195] text-[#060810] text-sm font-semibold"
+									>
+										<GoogleIcon />
+										Get Started Free
+									</button>
+								</>
+							)}
 						</div>
 					</div>
 				)}
@@ -237,28 +256,43 @@ export function LandingPage() {
 
 				{/* CTA buttons */}
 				<div className="mt-10 flex flex-col sm:flex-row items-center gap-4">
-					<button
-						onClick={() => void handleSignIn()}
-						disabled={ctaLoading}
-						className="group flex items-center gap-3 px-7 py-3.5 rounded-xl bg-white text-[#060810] font-semibold text-sm hover:bg-white/90 transition-all active:scale-[0.97] shadow-lg shadow-white/10 disabled:opacity-60"
-					>
-						{ctaLoading ? (
-							<div className="w-4 h-4 border-2 border-[#060810]/30 border-t-[#060810] rounded-full animate-spin" />
-						) : (
-							<GoogleIcon />
-						)}
-						Sign Up with Google
-						<ArrowRight
-							size={15}
-							className="opacity-60 group-hover:translate-x-0.5 transition-transform"
-						/>
-					</button>
-					<a
-						href="#products"
-						className="flex items-center gap-2 px-7 py-3.5 rounded-xl border border-white/10 text-[#8a99b3] text-sm font-medium hover:border-white/20 hover:text-white transition-all"
-					>
-						Learn more
-					</a>
+					{status === "authenticated" ? (
+						<Link
+							to="/dashboard"
+							className="group flex items-center gap-3 px-7 py-3.5 rounded-xl bg-white text-[#060810] font-semibold text-sm hover:bg-white/90 transition-all active:scale-[0.97] shadow-lg shadow-white/10"
+						>
+							Go to Dashboard
+							<ArrowRight
+								size={15}
+								className="opacity-60 group-hover:translate-x-0.5 transition-transform"
+							/>
+						</Link>
+					) : (
+						<>
+							<button
+								onClick={() => void handleSignIn()}
+								disabled={ctaLoading}
+								className="group flex items-center gap-3 px-7 py-3.5 rounded-xl bg-white text-[#060810] font-semibold text-sm hover:bg-white/90 transition-all active:scale-[0.97] shadow-lg shadow-white/10 disabled:opacity-60"
+							>
+								{ctaLoading ? (
+									<div className="w-4 h-4 border-2 border-[#060810]/30 border-t-[#060810] rounded-full animate-spin" />
+								) : (
+									<GoogleIcon />
+								)}
+								Sign Up with Google
+								<ArrowRight
+									size={15}
+									className="opacity-60 group-hover:translate-x-0.5 transition-transform"
+								/>
+							</button>
+							<a
+								href="#products"
+								className="flex items-center gap-2 px-7 py-3.5 rounded-xl border border-white/10 text-[#8a99b3] text-sm font-medium hover:border-white/20 hover:text-white transition-all"
+							>
+								Learn more
+							</a>
+						</>
+					)}
 				</div>
 
 				{/* Social proof */}
@@ -311,14 +345,20 @@ export function LandingPage() {
 								{[
 									{ icon: "📊", label: "Dashboard" },
 									{ icon: "💼", label: "Wallet" },
-									{ icon: "🔗", label: "Links", active: true },
+									{
+										icon: "🔗",
+										label: "Links",
+										active: true,
+									},
 									{ icon: "🔄", label: "Swap" },
 								].map((item) => (
 									<div
 										key={item.label}
 										className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-xs ${item.active ? "bg-white/10 text-white" : "text-[#8a99b3]"}`}
 									>
-										<span className="text-sm">{item.icon}</span>
+										<span className="text-sm">
+											{item.icon}
+										</span>
 										{item.label}
 									</div>
 								))}
@@ -328,7 +368,9 @@ export function LandingPage() {
 							<div className="col-span-3 md:col-span-2 p-6 flex flex-col gap-5">
 								<div className="flex items-center justify-between">
 									<div>
-										<p className="text-xs text-[#8a99b3]">Total Balance</p>
+										<p className="text-xs text-[#8a99b3]">
+											Total Balance
+										</p>
 										<p className="text-2xl font-bold text-white mt-0.5">
 											$2,481.50
 										</p>
@@ -362,7 +404,9 @@ export function LandingPage() {
 											<div className="flex items-center gap-3">
 												<div
 													className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white"
-													style={{ background: token.color }}
+													style={{
+														background: token.color,
+													}}
 												>
 													{token.symbol[0]}
 												</div>
@@ -384,11 +428,16 @@ export function LandingPage() {
 
 								{/* Active links mock */}
 								<div>
-									<p className="text-xs text-[#8a99b3] mb-2">Active Links</p>
+									<p className="text-xs text-[#8a99b3] mb-2">
+										Active Links
+									</p>
 									<div className="flex items-center justify-between px-4 py-3 rounded-xl bg-white/3 border border-white/6">
 										<div className="flex items-center gap-3">
 											<div className="w-7 h-7 rounded-lg bg-[#14F195]/10 flex items-center justify-center">
-												<Link2 size={12} className="text-[#14F195]" />
+												<Link2
+													size={12}
+													className="text-[#14F195]"
+												/>
 											</div>
 											<div>
 												<p className="text-xs font-medium text-white">
@@ -411,7 +460,10 @@ export function LandingPage() {
 			</section>
 
 			{/* ══════════════════════ PRODUCTS ══════════════════════ */}
-			<section id="products" className="relative py-28 px-4 sm:px-6 lg:px-8">
+			<section
+				id="products"
+				className="relative py-28 px-4 sm:px-6 lg:px-8"
+			>
 				<div className="max-w-7xl mx-auto">
 					{/* Section heading */}
 					<div className="text-center mb-16">
@@ -431,7 +483,12 @@ export function LandingPage() {
 								badge: "DASHLINK WALLET",
 								title: "The world's simplest wallet",
 								desc: "Create or log in to your secured DashLink wallet in 2 clicks — just a Google account, nothing else.",
-								icon: <Wallet size={22} className="text-[#14F195]" />,
+								icon: (
+									<Wallet
+										size={22}
+										className="text-[#14F195]"
+									/>
+								),
 								color: "#14F195",
 								cta: "Get your wallet",
 							},
@@ -439,7 +496,12 @@ export function LandingPage() {
 								badge: "DASHLINK PRO",
 								title: "Send at scale, even to non-crypto users",
 								desc: "Distribute tokens, airdrops, and payouts to anyone with an email — no wallets, no setup required.",
-								icon: <Send size={22} className="text-[#9945FF]" />,
+								icon: (
+									<Send
+										size={22}
+										className="text-[#9945FF]"
+									/>
+								),
 								color: "#9945FF",
 								cta: "Explore Pro",
 							},
@@ -447,7 +509,12 @@ export function LandingPage() {
 								badge: "DASHLINK API",
 								title: "Developer-first infrastructure",
 								desc: "Programmatically generate wallets and manage token distribution at scale with our simple REST API.",
-								icon: <Code2 size={22} className="text-[#F5AA14]" />,
+								icon: (
+									<Code2
+										size={22}
+										className="text-[#F5AA14]"
+									/>
+								),
 								color: "#F5AA14",
 								cta: "Read the docs",
 							},
@@ -519,9 +586,9 @@ export function LandingPage() {
 							The world's simplest wallet
 						</h2>
 						<p className="text-[#8a99b3] text-lg leading-relaxed mb-8">
-							Create or log in to your secured DashLink wallet with just
-							2 clicks — powered by Google OAuth. No seed phrases. No
-							extensions. No complexity.
+							Create or log in to your secured DashLink wallet
+							with just 2 clicks — powered by Google OAuth. No
+							seed phrases. No extensions. No complexity.
 						</p>
 						<ul className="flex flex-col gap-4 mb-10">
 							{[
@@ -560,9 +627,15 @@ export function LandingPage() {
 							<div className="flex items-center justify-between mb-7">
 								<div className="flex items-center gap-2.5">
 									<div className="w-8 h-8 rounded-xl bg-linear-to-br from-[#14F195] to-[#0ea572] flex items-center justify-center">
-										<Link2 size={14} className="text-[#060810]" strokeWidth={2.5} />
+										<Link2
+											size={14}
+											className="text-[#060810]"
+											strokeWidth={2.5}
+										/>
 									</div>
-									<span className="font-bold text-white text-sm">DashLink Wallet</span>
+									<span className="font-bold text-white text-sm">
+										DashLink Wallet
+									</span>
 								</div>
 								<span className="text-[10px] px-2 py-0.5 rounded-full bg-[#14F195]/10 text-[#14F195] font-medium border border-[#14F195]/20">
 									● Live
@@ -571,11 +644,17 @@ export function LandingPage() {
 
 							{/* Balance */}
 							<div className="mb-7">
-								<p className="text-xs text-[#8a99b3] mb-1">Portfolio Value</p>
-								<p className="text-4xl font-bold text-white">$2,481.50</p>
+								<p className="text-xs text-[#8a99b3] mb-1">
+									Portfolio Value
+								</p>
+								<p className="text-4xl font-bold text-white">
+									$2,481.50
+								</p>
 								<p className="text-xs text-[#14F195] mt-1.5 flex items-center gap-1">
 									<span>↑ 4.2%</span>
-									<span className="text-[#8a99b3]">today</span>
+									<span className="text-[#8a99b3]">
+										today
+									</span>
 								</p>
 							</div>
 
@@ -583,14 +662,22 @@ export function LandingPage() {
 							<div className="grid grid-cols-3 gap-3 mb-7">
 								{[
 									{ label: "Send", icon: <Send size={15} /> },
-									{ label: "Create Link", icon: <Link2 size={15} /> },
-									{ label: "Swap", icon: <ArrowRight size={15} /> },
+									{
+										label: "Create Link",
+										icon: <Link2 size={15} />,
+									},
+									{
+										label: "Swap",
+										icon: <ArrowRight size={15} />,
+									},
 								].map((action) => (
 									<div
 										key={action.label}
 										className="flex flex-col items-center gap-2 p-3 rounded-xl bg-white/4 border border-white/6 hover:bg-white/7 transition-colors cursor-pointer"
 									>
-										<div className="text-[#14F195]">{action.icon}</div>
+										<div className="text-[#14F195]">
+											{action.icon}
+										</div>
 										<span className="text-[10px] text-[#8a99b3] font-medium">
 											{action.label}
 										</span>
@@ -600,10 +687,26 @@ export function LandingPage() {
 
 							{/* Token list */}
 							<div className="flex flex-col gap-2">
-								<p className="text-[11px] text-[#8a99b3] mb-1">Assets</p>
+								<p className="text-[11px] text-[#8a99b3] mb-1">
+									Assets
+								</p>
 								{[
-									{ symbol: "SOL", name: "Solana", amount: "12.4", value: "$1,860.00", c: "#9945FF", change: "+5.1%" },
-									{ symbol: "USDC", name: "USD Coin", amount: "621.50", value: "$621.50", c: "#2775CA", change: "+0.01%" },
+									{
+										symbol: "SOL",
+										name: "Solana",
+										amount: "12.4",
+										value: "$1,860.00",
+										c: "#9945FF",
+										change: "+5.1%",
+									},
+									{
+										symbol: "USDC",
+										name: "USD Coin",
+										amount: "621.50",
+										value: "$621.50",
+										c: "#2775CA",
+										change: "+0.01%",
+									},
 								].map((t) => (
 									<div
 										key={t.symbol}
@@ -619,11 +722,17 @@ export function LandingPage() {
 											<p className="text-sm font-medium text-white truncate">
 												{t.name}
 											</p>
-											<p className="text-[11px] text-[#8a99b3]">{t.amount} {t.symbol}</p>
+											<p className="text-[11px] text-[#8a99b3]">
+												{t.amount} {t.symbol}
+											</p>
 										</div>
 										<div className="text-right">
-											<p className="text-sm font-semibold text-white">{t.value}</p>
-											<p className="text-[10px] text-[#14F195]">{t.change}</p>
+											<p className="text-sm font-semibold text-white">
+												{t.value}
+											</p>
+											<p className="text-[10px] text-[#14F195]">
+												{t.change}
+											</p>
 										</div>
 									</div>
 								))}
@@ -648,16 +757,39 @@ export function LandingPage() {
 							</h4>
 							<div className="flex flex-col gap-3">
 								{[
-									{ step: "1", text: "Upload CSV of recipients", done: true },
-									{ step: "2", text: "Select token & amount", done: true },
-									{ step: "3", text: "Generate magic links", done: true },
-									{ step: "4", text: "Recipients claim instantly", done: false },
+									{
+										step: "1",
+										text: "Upload CSV of recipients",
+										done: true,
+									},
+									{
+										step: "2",
+										text: "Select token & amount",
+										done: true,
+									},
+									{
+										step: "3",
+										text: "Generate magic links",
+										done: true,
+									},
+									{
+										step: "4",
+										text: "Recipients claim instantly",
+										done: false,
+									},
 								].map((item) => (
-									<div key={item.step} className="flex items-center gap-3">
+									<div
+										key={item.step}
+										className="flex items-center gap-3"
+									>
 										<div
 											className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${item.done ? "bg-[#9945FF] text-white" : "bg-white/6 text-[#8a99b3] border border-white/10"}`}
 										>
-											{item.done ? <Check size={13} /> : item.step}
+											{item.done ? (
+												<Check size={13} />
+											) : (
+												item.step
+											)}
 										</div>
 										<p
 											className={`text-sm ${item.done ? "text-white" : "text-[#8a99b3]"}`}
@@ -668,9 +800,15 @@ export function LandingPage() {
 								))}
 							</div>
 							<div className="mt-7 p-4 rounded-xl bg-[#9945FF]/10 border border-[#9945FF]/20">
-								<p className="text-xs text-[#8a99b3] mb-1">Total distributed</p>
-								<p className="text-2xl font-bold text-white">$124,800</p>
-								<p className="text-xs text-[#9945FF] mt-1">across 9,872 links</p>
+								<p className="text-xs text-[#8a99b3] mb-1">
+									Total distributed
+								</p>
+								<p className="text-2xl font-bold text-white">
+									$124,800
+								</p>
+								<p className="text-xs text-[#9945FF] mt-1">
+									across 9,872 links
+								</p>
 							</div>
 						</div>
 					</div>
@@ -681,12 +819,13 @@ export function LandingPage() {
 							DashLink Pro
 						</p>
 						<h2 className="text-4xl sm:text-5xl font-bold text-white leading-tight mb-6">
-							Send digital assets at scale, even to non-crypto users
+							Send digital assets at scale, even to non-crypto
+							users
 						</h2>
 						<p className="text-[#8a99b3] text-lg leading-relaxed mb-8">
-							DashLink makes distributing digital assets as simple as
-							clicking a link. From employee rewards to mass airdrops,
-							DashLink Pro handles it all.
+							DashLink makes distributing digital assets as simple
+							as clicking a link. From employee rewards to mass
+							airdrops, DashLink Pro handles it all.
 						</p>
 						<ul className="flex flex-col gap-4 mb-10">
 							{[
@@ -729,9 +868,9 @@ export function LandingPage() {
 							Ready for developers
 						</h2>
 						<p className="text-[#8a99b3] text-lg leading-relaxed mb-8">
-							DashLink wallets can be programmatically generated to hold
-							tokens and NFTs at scale. Our clean REST API gets you from
-							zero to production in minutes.
+							DashLink wallets can be programmatically generated
+							to hold tokens and NFTs at scale. Our clean REST API
+							gets you from zero to production in minutes.
 						</p>
 						<div className="flex items-center gap-4">
 							<button className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-white/10 text-white text-sm font-medium hover:bg-white/5 transition-all">
@@ -751,13 +890,15 @@ export function LandingPage() {
 							{/* Code topbar */}
 							<div className="flex items-center justify-between px-5 py-3 border-b border-white/6">
 								<div className="flex gap-1.5">
-									{["#ff5f56", "#ffbd2e", "#27c93f"].map((c) => (
-										<div
-											key={c}
-											className="w-3 h-3 rounded-full"
-											style={{ background: c }}
-										/>
-									))}
+									{["#ff5f56", "#ffbd2e", "#27c93f"].map(
+										(c) => (
+											<div
+												key={c}
+												className="w-3 h-3 rounded-full"
+												style={{ background: c }}
+											/>
+										),
+									)}
 								</div>
 								<span className="text-[11px] text-[#8a99b3]">
 									create-link.ts
@@ -768,40 +909,78 @@ export function LandingPage() {
 							{/* Code content */}
 							<pre className="p-6 text-[13px] leading-relaxed font-mono overflow-x-auto">
 								<code>
-									<span className="text-[#8a99b3]">// Create a DashLink in one line</span>
+									<span className="text-[#8a99b3]">
+										// Create a DashLink in one line
+									</span>
 									{"\n"}
-									<span className="text-[#9945FF]">import</span>
-									<span className="text-white"> {"{"} DashLink {"}"} </span>
+									<span className="text-[#9945FF]">
+										import
+									</span>
+									<span className="text-white">
+										{" "}
+										{"{"} DashLink {"}"}{" "}
+									</span>
 									<span className="text-[#9945FF]">from</span>
-									<span className="text-[#F5AA14]"> '@dashlink/sdk'</span>
+									<span className="text-[#F5AA14]">
+										{" "}
+										'@dashlink/sdk'
+									</span>
 									{"\n\n"}
-									<span className="text-[#9945FF]">const</span>
+									<span className="text-[#9945FF]">
+										const
+									</span>
 									<span className="text-white"> link </span>
 									<span className="text-[#F5AA14]">=</span>
-									<span className="text-[#9945FF]"> await</span>
-									<span className="text-white"> DashLink.</span>
-									<span className="text-[#14F195]">create</span>
+									<span className="text-[#9945FF]">
+										{" "}
+										await
+									</span>
+									<span className="text-white">
+										{" "}
+										DashLink.
+									</span>
+									<span className="text-[#14F195]">
+										create
+									</span>
 									<span className="text-white">{"({"}</span>
 									{"\n"}
-									<span className="text-white">{"  "}token</span>
+									<span className="text-white">
+										{"  "}token
+									</span>
 									<span className="text-[#F5AA14]">:</span>
-									<span className="text-[#F5AA14]"> 'SOL'</span>
+									<span className="text-[#F5AA14]">
+										{" "}
+										'SOL'
+									</span>
 									<span className="text-white">,</span>
 									{"\n"}
-									<span className="text-white">{"  "}amount</span>
+									<span className="text-white">
+										{"  "}amount
+									</span>
 									<span className="text-[#F5AA14]">:</span>
 									<span className="text-[#14F195]"> 0.5</span>
 									<span className="text-white">,</span>
 									{"\n"}
-									<span className="text-white">{"  "}recipient</span>
+									<span className="text-white">
+										{"  "}recipient
+									</span>
 									<span className="text-[#F5AA14]">:</span>
-									<span className="text-[#F5AA14]"> 'alice@example.com'</span>
+									<span className="text-[#F5AA14]">
+										{" "}
+										'alice@example.com'
+									</span>
 									{"\n"}
 									<span className="text-white">{"}"});</span>
 									{"\n\n"}
-									<span className="text-[#8a99b3]">// → {"{"} url: 'https://dashlink.app/c/xK9mP2qR' {"}"}</span>
+									<span className="text-[#8a99b3]">
+										// → {"{"} url:
+										'https://dashlink.app/c/xK9mP2qR' {"}"}
+									</span>
 									{"\n"}
-									<span className="text-[#8a99b3]">// Share the URL — recipient claims with one click</span>
+									<span className="text-[#8a99b3]">
+										// Share the URL — recipient claims with
+										one click
+									</span>
 								</code>
 							</pre>
 						</div>
@@ -843,7 +1022,10 @@ export function LandingPage() {
 								color: "#F5AA14",
 							},
 						].map((s) => (
-							<div key={s.step} className="relative flex flex-col items-center text-center">
+							<div
+								key={s.step}
+								className="relative flex flex-col items-center text-center"
+							>
 								<div
 									className="w-18 h-18 rounded-2xl flex items-center justify-center text-xl font-extrabold mb-6 relative z-10"
 									style={{
@@ -854,8 +1036,12 @@ export function LandingPage() {
 								>
 									{s.step}
 								</div>
-								<h3 className="text-lg font-bold text-white mb-3">{s.title}</h3>
-								<p className="text-sm text-[#8a99b3] leading-relaxed">{s.desc}</p>
+								<h3 className="text-lg font-bold text-white mb-3">
+									{s.title}
+								</h3>
+								<p className="text-sm text-[#8a99b3] leading-relaxed">
+									{s.desc}
+								</p>
 							</div>
 						))}
 					</div>
@@ -875,7 +1061,9 @@ export function LandingPage() {
 							<p className="text-4xl font-extrabold text-white mb-2">
 								{stat.value}
 							</p>
-							<p className="text-sm text-[#8a99b3]">{stat.label}</p>
+							<p className="text-sm text-[#8a99b3]">
+								{stat.label}
+							</p>
 						</div>
 					))}
 				</div>
@@ -891,24 +1079,38 @@ export function LandingPage() {
 						Built with security at its core
 					</h2>
 					<p className="text-[#8a99b3] text-lg max-w-2xl mx-auto mb-16">
-						DashLink uses MPC (Multi-Party Computation) cryptography so no single party ever holds complete access to your keys.
+						DashLink uses MPC (Multi-Party Computation) cryptography
+						so no single party ever holds complete access to your
+						keys.
 					</p>
 					<div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
 						{[
 							{
-								icon: <Shield size={22} className="text-[#14F195]" />,
+								icon: (
+									<Shield
+										size={22}
+										className="text-[#14F195]"
+									/>
+								),
 								title: "MPC Key Architecture",
 								desc: "Your private key is never reconstructed in a single location. Splits are held across secure parties.",
 								color: "#14F195",
 							},
 							{
-								icon: <Globe size={22} className="text-[#9945FF]" />,
+								icon: (
+									<Globe
+										size={22}
+										className="text-[#9945FF]"
+									/>
+								),
 								title: "Non-Custodial",
 								desc: "You own your assets. DashLink never holds your funds — they live on-chain in your wallet.",
 								color: "#9945FF",
 							},
 							{
-								icon: <Zap size={22} className="text-[#F5AA14]" />,
+								icon: (
+									<Zap size={22} className="text-[#F5AA14]" />
+								),
 								title: "Built on Solana",
 								desc: "Sub-second finality, near-zero fees. Solana's performance makes DashLink possible.",
 								color: "#F5AA14",
@@ -927,8 +1129,12 @@ export function LandingPage() {
 								>
 									{card.icon}
 								</div>
-								<h3 className="text-base font-bold text-white mb-2">{card.title}</h3>
-								<p className="text-sm text-[#8a99b3] leading-relaxed">{card.desc}</p>
+								<h3 className="text-base font-bold text-white mb-2">
+									{card.title}
+								</h3>
+								<p className="text-sm text-[#8a99b3] leading-relaxed">
+									{card.desc}
+								</p>
 							</div>
 						))}
 					</div>
@@ -978,8 +1184,8 @@ export function LandingPage() {
 						</span>
 					</h2>
 					<p className="text-[#8a99b3] text-lg mb-10">
-						Create and send crypto with DashLink — it takes less than 30
-						seconds.
+						Create and send crypto with DashLink — it takes less
+						than 30 seconds.
 					</p>
 					<div className="flex flex-col sm:flex-row items-center justify-center gap-4">
 						<button
@@ -1010,12 +1216,19 @@ export function LandingPage() {
 						<div className="md:col-span-1">
 							<div className="flex items-center gap-2.5 mb-4">
 								<div className="w-8 h-8 rounded-xl bg-linear-to-br from-[#14F195] to-[#0ea572] flex items-center justify-center">
-									<Link2 size={14} className="text-[#060810]" strokeWidth={2.5} />
+									<Link2
+										size={14}
+										className="text-[#060810]"
+										strokeWidth={2.5}
+									/>
 								</div>
-								<span className="font-bold text-white text-base">DashLink</span>
+								<span className="font-bold text-white text-base">
+									DashLink
+								</span>
 							</div>
 							<p className="text-sm text-[#8a99b3] leading-relaxed mb-5">
-								Instant crypto transfers via URL. Non-custodial, lightweight, and built on Solana.
+								Instant crypto transfers via URL. Non-custodial,
+								lightweight, and built on Solana.
 							</p>
 							<div className="flex items-center gap-3">
 								{/* Twitter/X */}
@@ -1023,7 +1236,12 @@ export function LandingPage() {
 									href="#"
 									className="w-9 h-9 rounded-lg border border-white/8 bg-white/3 flex items-center justify-center text-[#8a99b3] hover:text-white hover:bg-white/8 transition-all"
 								>
-									<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+									<svg
+										width="15"
+										height="15"
+										viewBox="0 0 24 24"
+										fill="currentColor"
+									>
 										<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
 									</svg>
 								</a>
@@ -1032,7 +1250,12 @@ export function LandingPage() {
 									href="#"
 									className="w-9 h-9 rounded-lg border border-white/8 bg-white/3 flex items-center justify-center text-[#8a99b3] hover:text-white hover:bg-white/8 transition-all"
 								>
-									<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+									<svg
+										width="15"
+										height="15"
+										viewBox="0 0 24 24"
+										fill="currentColor"
+									>
 										<path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057.1 18.08.112 18.1.132 18.117a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.128 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z" />
 									</svg>
 								</a>
@@ -1041,7 +1264,12 @@ export function LandingPage() {
 									href="#"
 									className="w-9 h-9 rounded-lg border border-white/8 bg-white/3 flex items-center justify-center text-[#8a99b3] hover:text-white hover:bg-white/8 transition-all"
 								>
-									<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
+									<svg
+										width="15"
+										height="15"
+										viewBox="0 0 24 24"
+										fill="currentColor"
+									>
 										<path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0 0 22 12.017C22 6.484 17.522 2 12 2z" />
 									</svg>
 								</a>
@@ -1055,7 +1283,10 @@ export function LandingPage() {
 							</h4>
 							<ul className="flex flex-col gap-3">
 								{[
-									{ label: "Create DashLink", href: "/links/create" },
+									{
+										label: "Create DashLink",
+										href: "/links/create",
+									},
 									{ label: "Documentation", href: "#" },
 									{ label: "API Reference", href: "#" },
 									{ label: "SDK", href: "#" },
@@ -1074,7 +1305,9 @@ export function LandingPage() {
 
 						{/* Company */}
 						<div>
-							<h4 className="text-sm font-semibold text-white mb-5">Company</h4>
+							<h4 className="text-sm font-semibold text-white mb-5">
+								Company
+							</h4>
 							<ul className="flex flex-col gap-3">
 								{[
 									{ label: "FAQ", href: "#faq" },
@@ -1096,7 +1329,9 @@ export function LandingPage() {
 
 						{/* Legal */}
 						<div>
-							<h4 className="text-sm font-semibold text-white mb-5">Legal</h4>
+							<h4 className="text-sm font-semibold text-white mb-5">
+								Legal
+							</h4>
 							<ul className="flex flex-col gap-3">
 								{[
 									{ label: "Terms of Service", href: "#" },

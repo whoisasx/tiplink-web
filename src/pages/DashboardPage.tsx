@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpDown, PlusCircle, ArrowUpRight, Send, QrCode } from "lucide-react";
+import {
+	ArrowUpDown,
+	PlusCircle,
+	ArrowUpRight,
+	Send,
+	QrCode,
+} from "lucide-react";
 import { useAuthStore } from "@/store/auth.store";
 import { useBalances } from "@/hooks/useBalances";
 import { useTransactions } from "@/hooks/useTransactions";
@@ -81,7 +87,10 @@ export function DashboardPage() {
 							title="View wallet address & QR code"
 						>
 							{truncateAddress(user.wallet, 6)}
-							<QrCode size={11} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+							<QrCode
+								size={11}
+								className="opacity-0 group-hover:opacity-100 transition-opacity"
+							/>
 						</button>
 					)}
 				</div>
@@ -141,7 +150,9 @@ export function DashboardPage() {
 						className="flex flex-col items-center gap-2 rounded-xl border border-[hsl(216_34%_17%)] bg-[hsl(224_71%_6%)] p-4 hover:bg-white/5 transition-colors text-center w-full"
 					>
 						<Send size={20} className="text-white" />
-						<span className="text-xs font-medium text-white">Send</span>
+						<span className="text-xs font-medium text-white">
+							Send
+						</span>
 					</button>
 
 					{/* Receive — shows wallet QR code */}
@@ -150,7 +161,9 @@ export function DashboardPage() {
 						className="flex flex-col items-center gap-2 rounded-xl border border-[hsl(216_34%_17%)] bg-[hsl(224_71%_6%)] p-4 hover:bg-white/5 transition-colors text-center w-full"
 					>
 						<QrCode size={20} className="text-white" />
-						<span className="text-xs font-medium text-white">Receive</span>
+						<span className="text-xs font-medium text-white">
+							Receive
+						</span>
 					</button>
 				</div>
 			</div>

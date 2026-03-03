@@ -30,9 +30,10 @@ export function WalletAdapterButton({
 		return () => document.removeEventListener("mousedown", handler);
 	}, []);
 
-	const truncated = connected && publicKey
-		? `${publicKey.toString().slice(0, 4)}…${publicKey.toString().slice(-4)}`
-		: null;
+	const truncated =
+		connected && publicKey
+			? `${publicKey.toString().slice(0, 4)}…${publicKey.toString().slice(-4)}`
+			: null;
 
 	if (variant === "pill") {
 		return (
@@ -52,8 +53,13 @@ export function WalletAdapterButton({
 							) : (
 								<Wallet size={14} />
 							)}
-							<span className="font-mono text-xs">{truncated}</span>
-							<ChevronDown size={12} className="text-[hsl(215_20%_55%)]" />
+							<span className="font-mono text-xs">
+								{truncated}
+							</span>
+							<ChevronDown
+								size={12}
+								className="text-[hsl(215_20%_55%)]"
+							/>
 						</button>
 						{open && (
 							<div className="absolute right-0 top-full mt-1.5 w-44 rounded-xl border border-[hsl(216_34%_17%)] bg-[hsl(224_71%_8%)] shadow-xl py-1 z-50">
@@ -102,7 +108,10 @@ export function WalletAdapterButton({
 								className="w-4 h-4 rounded-sm shrink-0"
 							/>
 						) : (
-							<Wallet size={14} className="text-[hsl(215_20%_55%)] shrink-0" />
+							<Wallet
+								size={14}
+								className="text-[hsl(215_20%_55%)] shrink-0"
+							/>
 						)}
 						<span className="text-xs font-mono text-white truncate">
 							{truncated}

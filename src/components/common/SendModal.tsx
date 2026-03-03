@@ -87,7 +87,10 @@ export function SendModal({ onClose }: SendModalProps) {
 							className="flex items-center gap-4 p-4 rounded-xl border border-[hsl(216_34%_17%)] bg-[hsl(224_71%_6%)] hover:bg-white/5 transition-colors text-left w-full group"
 						>
 							<div className="w-10 h-10 rounded-xl bg-[#14F195]/10 flex items-center justify-center shrink-0 group-hover:bg-[#14F195]/20 transition-colors">
-								<PlusCircle size={18} className="text-[#14F195]" />
+								<PlusCircle
+									size={18}
+									className="text-[#14F195]"
+								/>
 							</div>
 							<div>
 								<p className="text-sm font-medium text-white">

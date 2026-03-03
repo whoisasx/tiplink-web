@@ -88,7 +88,10 @@ export function Sidebar() {
 								{truncateAddress(user.wallet)}
 							</p>
 						</div>
-						<QrCode size={13} className="text-[hsl(215_20%_55%)] opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+						<QrCode
+							size={13}
+							className="text-[hsl(215_20%_55%)] opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+						/>
 					</button>
 				)}
 				<WalletAdapterButton variant="card" />
