@@ -31,6 +31,7 @@ export interface LinkPagination {
 
 export interface LinkListItem {
 	link_id: string;
+	link_token: string;
 	link_url: string;
 	amount: number;
 	mint: string | null;

@@ -1,4 +1,4 @@
-import apiClient from "./client";
+import apiClient, { publicApiClient } from "./client";
 import type {
 	CreateLinkRequest,
 	CreateLinkResponse,
@@ -14,7 +14,7 @@ export async function createLink(
 	req: CreateLinkRequest,
 ): Promise<CreateLinkResponse> {
 	const { data } = await apiClient.post<ApiResponse<CreateLinkResponse>>(
-		"/link",
+		"/link/create",
 		req,
 	);
 	if (!data.result) throw new Error(data.error ?? "Failed to create link");
@@ -25,7 +25,7 @@ export async function getMyLinks(
 	query: MyLinksQuery = {},
 ): Promise<MyLinksResponse> {
 	const { data } = await apiClient.get<ApiResponse<MyLinksResponse>>(
-		"/link",
+		"/link/my",
 		{
 			params: query,
 		},
@@ -40,7 +40,7 @@ export async function cancelLink(token: string): Promise<void> {
 
 /** Public — no auth required */
 export async function lookupLink(token: string): Promise<LinkInfoResponse> {
-	const { data } = await apiClient.get<ApiResponse<LinkInfoResponse>>(
+	const { data } = await publicApiClient.get<ApiResponse<LinkInfoResponse>>(
 		`/link/${token}`,
 	);
 	if (!data.result) throw new Error(data.error ?? "Link not found");
@@ -52,7 +52,7 @@ export async function claimLink(
 	token: string,
 	req: ClaimLinkRequest,
 ): Promise<ClaimLinkResponse> {
-	const { data } = await apiClient.post<ApiResponse<ClaimLinkResponse>>(
+	const { data } = await publicApiClient.post<ApiResponse<ClaimLinkResponse>>(
 		`/link/${token}/claim`,
 		req,
 	);

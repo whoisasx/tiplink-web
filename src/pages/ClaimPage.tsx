@@ -15,7 +15,11 @@ import {
 import { lookupLink, claimLink } from "@/api/link";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { StatusBadge } from "@/components/common/StatusBadge";
-import { mintToSymbol, isValidSolanaAddress } from "@/lib/utils";
+import {
+	mintToSymbol,
+	isValidSolanaAddress,
+	formatLinkAmount,
+} from "@/lib/utils";
 import type { LinkInfoResponse } from "@/types/link";
 
 const claimSchema = z.object({
@@ -39,7 +43,7 @@ function StatusScreen({
 		claimed: {
 			icon: <CheckCircle2 size={40} className="text-emerald-400" />,
 			title: "Link Already Claimed",
-			message: `This link for ${amount / 1e9} ${mintToSymbol(mint)} has already been claimed.`,
+			message: `This link for ${formatLinkAmount(amount, mint)} ${mintToSymbol(mint)} has already been claimed.`,
 		},
 		cancelled: {
 			icon: <Ban size={40} className="text-red-400" />,
@@ -73,7 +77,10 @@ function SuccessScreen({ amount, mint }: { amount: number; mint: string }) {
 			</div>
 			<div>
 				<h2 className="text-2xl font-bold text-white">
-					+{amount / 1e9} {mintToSymbol(mint)}
+					+{formatLinkAmount(amount, mint)}{" "}
+					<span className="text-base text-[hsl(215_20%_65%)]">
+						{mintToSymbol(mint)}
+					</span>
 				</h2>
 				<p className="text-sm text-[hsl(215_20%_55%)] mt-1">
 					Successfully received!
@@ -199,7 +206,10 @@ export function ClaimPage() {
 									<div className="flex items-center justify-between mb-6 p-4 rounded-xl bg-white/4 border border-[hsl(216_34%_17%)]">
 										<div>
 											<p className="text-2xl font-bold text-white">
-												{linkInfo.amount / 1e9}{" "}
+												{formatLinkAmount(
+													linkInfo.amount,
+													linkInfo.mint,
+												)}{" "}
 												<span className="text-base text-[hsl(215_20%_65%)]">
 													{mintToSymbol(
 														linkInfo.mint,

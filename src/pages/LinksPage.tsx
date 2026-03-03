@@ -8,6 +8,7 @@ import {
 	ExternalLink,
 	Copy,
 	Link2,
+	ChevronRight,
 } from "lucide-react";
 import { useLinks, useCancelLink } from "@/hooks/useLinks";
 import { StatusBadge } from "@/components/common/StatusBadge";
@@ -15,7 +16,7 @@ import { EmptyState } from "@/components/common/EmptyState";
 import { ErrorState } from "@/components/common/ErrorState";
 import { Pagination } from "@/components/common/Pagination";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
-import { timeAgo, fullDate, mintToSymbol } from "@/lib/utils";
+import { timeAgo, fullDate, mintToSymbol, formatLinkAmount } from "@/lib/utils";
 import type { LinkStatus, LinkListItem } from "@/types/link";
 
 const STATUS_TABS: Array<{ label: string; value: LinkStatus }> = [
@@ -49,9 +50,9 @@ function ConfirmCancelDialog({
 							Cancel this link?
 						</h3>
 						<p className="text-xs text-[hsl(215_20%_55%)] mt-1 leading-relaxed">
-							The {link.amount / 1e9} {mintToSymbol(link.mint)}{" "}
-							will be returned to your wallet. This cannot be
-							undone.
+							The {formatLinkAmount(link.amount, link.mint)}{" "}
+							{mintToSymbol(link.mint)} will be returned to your
+							wallet. This cannot be undone.
 						</p>
 					</div>
 				</div>
@@ -96,7 +97,7 @@ export function LinksPage() {
 	const handleCancel = async () => {
 		if (!cancelTarget) return;
 		try {
-			await cancelLink(cancelTarget.link_id);
+			await cancelLink(cancelTarget.link_token);
 			toast.success("Link cancelled");
 			setCancelTarget(null);
 		} catch {
@@ -200,22 +201,27 @@ export function LinksPage() {
 				<>
 					<div className="flex flex-col gap-3">
 						{data.links.map((link) => {
-							const claimUrl = `${appUrl}/claim/${link.link_url.split("/").pop() ?? link.link_id}`;
-							const token =
-								link.link_url.split("/").pop() ?? link.link_id;
+							const claimUrl = `${appUrl}/claim/${link.link_token}`;
+							const token = link.link_token;
 							const expiringSoon =
 								link.expiry_at && link.status === "active";
 
 							return (
 								<div
 									key={link.link_id}
-									className="rounded-xl border border-[hsl(216_34%_17%)] bg-[hsl(224_71%_6%)] p-4 flex flex-col gap-3"
+									className="rounded-xl border border-[hsl(216_34%_17%)] bg-[hsl(224_71%_6%)] p-4 flex flex-col gap-3 hover:border-white/20 transition-colors"
 								>
-									<div className="flex items-start gap-3">
+									<Link
+										to={`/links/${token}`}
+										className="flex items-start gap-3 group"
+									>
 										<div className="flex-1 min-w-0">
 											<div className="flex items-center gap-2 flex-wrap">
 												<span className="text-sm font-semibold text-white">
-													{link.amount / 1e9}{" "}
+													{formatLinkAmount(
+														link.amount,
+														link.mint,
+													)}{" "}
 													{mintToSymbol(link.mint)}
 												</span>
 												<StatusBadge
@@ -236,18 +242,22 @@ export function LinksPage() {
 												</p>
 											)}
 										</div>
-										{link.status === "active" && (
-											<button
-												onClick={() =>
-													setCancelTarget(link)
-												}
-												className="p-1.5 rounded-lg text-[hsl(215_20%_55%)] hover:text-red-400 hover:bg-red-500/10 transition-colors"
-												aria-label="Cancel link"
-											>
-												<Trash2 size={14} />
-											</button>
-										)}
-									</div>
+										<ChevronRight
+											size={14}
+											className="text-[hsl(215_20%_35%)] group-hover:text-white transition-colors mt-0.5 shrink-0"
+										/>
+									</Link>
+									{link.status === "active" && (
+										<button
+											onClick={() =>
+												setCancelTarget(link)
+											}
+											className="p-1.5 rounded-lg text-[hsl(215_20%_55%)] hover:text-red-400 hover:bg-red-500/10 transition-colors self-start"
+											aria-label="Cancel link"
+										>
+											<Trash2 size={14} />
+										</button>
+									)}
 
 									<div className="flex items-center gap-2 bg-white/3 rounded-lg px-3 py-2">
 										<span className="flex-1 text-[11px] font-mono text-[hsl(215_20%_55%)] truncate">

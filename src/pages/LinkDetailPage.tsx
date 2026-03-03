@@ -7,7 +7,7 @@ import { StatusBadge } from "@/components/common/StatusBadge";
 import { LoadingSpinner } from "@/components/common/LoadingSpinner";
 import { ErrorState } from "@/components/common/ErrorState";
 import { CopyButton } from "@/components/common/CopyButton";
-import { timeAgo, mintToSymbol } from "@/lib/utils";
+import { timeAgo, mintToSymbol, formatLinkAmount } from "@/lib/utils";
 
 export function LinkDetailPage() {
 	const { token } = useParams<{ token: string }>();
@@ -63,7 +63,7 @@ export function LinkDetailPage() {
 						<div className="flex items-start justify-between gap-4">
 							<div>
 								<p className="text-3xl font-bold text-white">
-									{link.amount / 1e9}{" "}
+									{formatLinkAmount(link.amount, link.mint)}{" "}
 									<span className="text-xl text-[hsl(215_20%_65%)]">
 										{mintToSymbol(link.mint)}
 									</span>
@@ -134,7 +134,7 @@ export function LinkDetailPage() {
 								Are you sure you want to cancel?
 							</p>
 							<p className="text-xs text-[hsl(215_20%_55%)] leading-relaxed">
-								The {link.amount / 1e9}{" "}
+								The {formatLinkAmount(link.amount, link.mint)}{" "}
 								{mintToSymbol(link.mint)} will be returned to
 								your wallet. This cannot be undone.
 							</p>

@@ -13,7 +13,7 @@ import type { ApiResponse } from "@/types/user";
 export async function getAllBalances(): Promise<WalletBalanceResponse> {
 	const { data } =
 		await apiClient.get<ApiResponse<WalletBalanceResponse>>(
-			"/wallet/balances",
+			"/wallet/balance",
 		);
 	if (!data.result) throw new Error(data.error ?? "Failed to fetch balances");
 	return data.result;

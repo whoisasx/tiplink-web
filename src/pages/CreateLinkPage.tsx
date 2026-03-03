@@ -116,13 +116,31 @@ export function CreateLinkPage() {
 	const selectedMint = watch("mint");
 	const noteValue = watch("note") ?? "";
 
+	const getDecimals = (mint: string | undefined) => {
+		if (!mint) return 9; // SOL
+		if (
+			mint === "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v" || // USDC
+			mint === "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB" // USDT
+		)
+			return 6;
+		return 9;
+	};
+
 	const onSubmit = async (data: CreateLinkFormData) => {
 		try {
+			const decimals = getDecimals(data.mint);
+			const amountInSmallestUnit = Math.round(
+				data.amount * Math.pow(10, decimals),
+			);
+			const expiry_at = data.expiry_at
+				? new Date(data.expiry_at).toISOString()
+				: undefined;
+
 			const result = await createLink({
-				amount: data.amount,
+				amount: amountInSmallestUnit,
 				mint: data.mint || undefined,
 				note: data.note || undefined,
-				expiry_at: data.expiry_at || undefined,
+				expiry_at,
 			});
 			setSuccessResult(result);
 		} catch (err) {

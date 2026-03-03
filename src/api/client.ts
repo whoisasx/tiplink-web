@@ -13,6 +13,12 @@ export const apiClient = axios.create({
 	headers: { "Content-Type": "application/json" },
 });
 
+/** Plain client for public endpoints — no auth header, no refresh interceptor. */
+export const publicApiClient = axios.create({
+	baseURL: `${BASE_URL}/api`,
+	headers: { "Content-Type": "application/json" },
+});
+
 // ─── Refresh-queue machinery ──────────────────────────────────────────────────
 let isRefreshing = false;
 

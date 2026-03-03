@@ -81,6 +81,22 @@ export function mintToSymbol(mint: string | null | undefined): string {
 	return MINT_SYMBOL_MAP[mint] ?? mint.slice(0, 4) + "…";
 }
 
+/** Format a raw on-chain amount to human-readable, based on mint decimals.
+ *  SOL uses 9 decimals (lamports), USDC/USDT use 6. */
+export function formatLinkAmount(
+	amount: number,
+	mint: string | null | undefined,
+): string {
+	const decimals =
+		mint === "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v" ||
+		mint === "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"
+			? 6
+			: 9;
+	return (amount / Math.pow(10, decimals))
+		.toFixed(decimals === 6 ? 2 : 4)
+		.replace(/\.?0+$/, "");
+}
+
 /** Solscan URLs */
 export const solscanTx = (sig: string) => `https://solscan.io/tx/${sig}`;
 export const solscanAddr = (addr: string) =>
