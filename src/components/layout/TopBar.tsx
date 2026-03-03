@@ -75,9 +75,15 @@ export function TopBar({ title }: TopBarProps) {
 						onClick={(e) => e.stopPropagation()}
 					>
 						<div className="flex items-center gap-2 px-2 mb-6">
-							<Link2 size={16} className="text-white" />
-							<span className="font-semibold text-white text-lg">
-								TipLink
+							<div className="w-7 h-7 rounded-lg bg-linear-to-br from-[#14F195] to-[#0ea572] flex items-center justify-center">
+								<Link2
+									size={13}
+									className="text-[#060810]"
+									strokeWidth={2.5}
+								/>
+							</div>
+							<span className="font-bold text-white text-lg">
+								DashLink
 							</span>
 						</div>
 						{navLinks.map(({ href, label, icon: Icon }) => {

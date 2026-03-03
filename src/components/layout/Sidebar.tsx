@@ -27,11 +27,15 @@ export function Sidebar() {
 		<aside className="hidden md:flex flex-col w-60 min-h-screen bg-[hsl(224_71%_6%)] border-r border-[hsl(216_34%_17%)] px-3 py-6 gap-1">
 			{/* Logo */}
 			<div className="flex items-center gap-2 px-3 mb-8">
-				<div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
-					<Link2 size={16} className="text-white" />
+				<div className="w-8 h-8 rounded-lg bg-linear-to-br from-[#14F195] to-[#0ea572] flex items-center justify-center">
+					<Link2
+						size={14}
+						className="text-[#060810]"
+						strokeWidth={2.5}
+					/>
 				</div>
-				<span className="font-semibold text-white tracking-tight text-lg">
-					TipLink
+				<span className="font-bold text-white tracking-tight text-lg">
+					DashLink
 				</span>
 			</div>
 

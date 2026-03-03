@@ -6,7 +6,7 @@ import {
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import { LoginPage } from "@/pages/LoginPage";
-import { AuthCallbackPage } from "@/pages/AuthCallbackPage";
+import { LandingPage } from "@/pages/LandingPage";
 import { DashboardPage } from "@/pages/DashboardPage";
 import { WalletPage } from "@/pages/WalletPage";
 import { LinksPage } from "@/pages/LinksPage";
@@ -20,12 +20,12 @@ import { NotFoundPage } from "@/pages/NotFoundPage";
 const router = createBrowserRouter([
 	// Public routes
 	{
-		path: "/login",
-		element: <LoginPage />,
+		path: "/",
+		element: <LandingPage />,
 	},
 	{
-		path: "/",
-		element: <AuthCallbackPage />,
+		path: "/login",
+		element: <LoginPage />,
 	},
 	{
 		path: "/claim/:token",

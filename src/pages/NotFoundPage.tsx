@@ -18,7 +18,7 @@ export function NotFoundPage() {
 			</p>
 			<p className="text-xs text-[hsl(215_20%_45%)] max-w-xs mb-6 leading-relaxed">
 				{looksLikeClaimPath
-					? "Looking to claim a TipLink? Make sure the full claim URL is correct."
+					? "Looking to claim a DashLink? Make sure the full claim URL is correct."
 					: "The page you're looking for doesn't exist or has been moved."}
 			</p>
 			<div className="flex gap-3">

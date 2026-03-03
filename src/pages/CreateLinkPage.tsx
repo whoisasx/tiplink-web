@@ -39,7 +39,7 @@ function SuccessSheet({
 
 	const share = async () => {
 		try {
-			await navigator.share({ title: "TipLink", url: claimUrl });
+			await navigator.share({ title: "DashLink", url: claimUrl });
 		} catch {
 			// User cancelled or failed
 		}
