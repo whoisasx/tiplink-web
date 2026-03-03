@@ -46,7 +46,6 @@ function StatCard({
 }
 
 export function DashboardPage() {
-	console.log("in dashboard");
 	const { user } = useAuthStore();
 	const { data: balances, isLoading: balancesLoading } = useBalances();
 	const { data: txData, isLoading: txLoading } = useTransactions({
